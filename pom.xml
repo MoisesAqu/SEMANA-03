@@ -2,15 +2,69 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.mycompany</groupId>
     <artifactId>Ejemplo04</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <!-- Dependencias necesarias para el proyecto -->
+    <dependencies>
+        <!-- Microsoft SQL Server JDBC Driver -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>9.2.1.jre8</version> <!-- Versión compatible con Java 8 y superior -->
+        </dependency>
+    </dependencies>
+
+    <!-- Configuración de compilación y ejecución -->
+    <build>
+        <plugins>
+            <!-- Plugin para compilar con Maven y asegurarse de que está usando Java 20 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>20</source> <!-- Usar Java 20 como fuente -->
+                    <target>20</target> <!-- Usar Java 20 como destino -->
+                </configuration>
+            </plugin>
+
+            <!-- Plugin para ejecutar la clase principal -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>com.mycompany.ejemplo04.Ejemplo04</mainClass> <!-- Clase principal para ejecutar -->
+                </configuration>
+            </plugin>
+
+            <!-- Plugin para generar un JAR ejecutable -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.mycompany.ejemplo04.Ejemplo04</mainClass> <!-- Clase principal del JAR -->
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Propiedades del proyecto -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>20</maven.compiler.source> <!-- Cambiado a 20 -->
-        <maven.compiler.target>20</maven.compiler.target> <!-- Cambiado a 20 -->
-        <exec.mainClass>com.mycompany.ejemplo04.Ejemplo04</exec.mainClass>
+        <maven.compiler.source>20</maven.compiler.source> <!-- Definición del compilador -->
+        <maven.compiler.target>20</maven.compiler.target> <!-- Definición del compilador -->
     </properties>
+
 </project>

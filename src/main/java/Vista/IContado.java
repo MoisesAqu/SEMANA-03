@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class IContado extends javax.swing.JFrame {
 
+   
     // Método para obtener el nombre del cliente o razón social
     public String getNombreCliente() {
         return txtRazonSocial.getText();
@@ -33,20 +34,26 @@ public class IContado extends javax.swing.JFrame {
         return Integer.parseInt(txtCantidadSolicitada.getText());
     }
 
+    public javax.swing.JTextField getTxtCantidadSolicitada() {
+        return txtCantidadSolicitada;
+    }
+    
+    
     // Método para obtener el neto a pagar
     public double getNetoPago() {
-        return Double.parseDouble(lblNetoPago.getText());
+        return Double.parseDouble(lblNeto.getText());
     }
     
     // Método para establecer el valor del neto a pagar
     public void setNetoPago(double neto) {
-        lblNetoPago.setText(String.valueOf(neto));
+        lblNeto.setText(String.valueOf(neto));
     }
 
     // Método para establecer el texto del resumen de la venta
     public void setResumen(String resumen) {
-        txpResumen.setText(resumen);
+        txpResumen.setText(resumen);  // Asegúrate de que el JTextPane se llama txpResumen
     }
+
 
     // Método para obtener la fecha
     public javax.swing.JLabel getLblFecha() {
@@ -58,14 +65,37 @@ public class IContado extends javax.swing.JFrame {
         return lblHora;
     }
 
-    // Método para obtener el JLabel lblNetoPago
-    public javax.swing.JLabel getLblNetoPago() {
-        return lblNetoPago;
+    public javax.swing.JLabel getLblNeto(){
+        return lblNeto;
     }
+   
 
     public javax.swing.JButton getBtnSalir(){
         return btnSalir;
     }
+
+    public javax.swing.JButton getBtnEliminar() {
+        return btnEliminar;
+    }
+
+    public javax.swing.JButton getBtnEditar() {
+        return btnEditar;
+    }
+
+    public javax.swing.JButton getBtnOk() {
+        return btnOk;
+    }
+
+        // Getter para cbxProducto
+    public javax.swing.JComboBox<String> getCbxProducto() {
+        return cbxProducto;
+    }
+
+    // Setter para cbxProducto, si es necesario cambiar su valor desde fuera
+    public void setCbxProducto(String producto) {
+        cbxProducto.setSelectedItem(producto);
+    }
+
     
     // Método para obtener el modelo de la tabla
     public javax.swing.JTable getTblProducto() {
@@ -77,9 +107,17 @@ public class IContado extends javax.swing.JFrame {
         txtRazonSocial.setText("");
         txtRuc.setText("");
         txtCantidadSolicitada.setText("");
-        lblNetoPago.setText("0.00");
+        lblNeto.setText("0.00");
         txpResumen.setText("");
     }
+    
+    public void limpiarCampos() {
+    // Solo limpiar los campos relacionados con la edición del producto
+    cbxProducto.setSelectedIndex(0);  // Restablecer el producto seleccionado
+    txtCantidadSolicitada.setText(""); // Limpiar la cantidad solicitada
+    // Cliente y RUC no se tocan aquí
+}
+
 
     // Método para mostrar mensajes al usuario (por ejemplo, una confirmación)
     public void mostrarMensaje(String mensaje) {
@@ -91,20 +129,40 @@ public class IContado extends javax.swing.JFrame {
         return btnAdquirir;
     }
 
-    
-    
+    private void procesarVenta(IContado vistaContado) {
+        try {
+            // Aquí va la lógica para procesar la venta.
+            // Obtén los valores de la vista, calcula el subtotal, descuento, etc.
+            // Actualiza la tabla con los productos.
+        } catch (Exception ex) {
+            vistaContado.mostrarMensaje("Error al procesar la venta: " + ex.getMessage());
+        }
+    }
+
+
+    private void actualizarResumen(IContado vistaContado) {
+    // Aquí va la lógica para actualizar el resumen.
+    }
+
+
     /**
      * Creates new form IContado
      */
     public IContado() {
         initComponents();
         setLocationRelativeTo(null); // Esto centra el JFrame
-         
-         // Inicializar fecha y hora actual
+
+        // Inicializar fecha y hora actual
         DateTimeFormatter dtfFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter dtfHora = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter dtfHora = DateTimeFormatter.ofPattern("hh:mm:ss a");  // Formato de 12 horas con AM/PM
+
         lblFecha.setText(dtfFecha.format(LocalDateTime.now()));
         lblHora.setText(dtfHora.format(LocalDateTime.now()));
+
+       // Los campos estarán habilitados al inicio
+    cbxProducto.setEnabled(true);
+    txtCantidadSolicitada.setEnabled(true);
+
     }
 
     /**
@@ -131,17 +189,20 @@ public class IContado extends javax.swing.JFrame {
         cbxProducto = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         txtCantidadSolicitada = new javax.swing.JTextField();
-        btnAdquirir = new javax.swing.JButton();
         ScrollPane = new javax.swing.JScrollPane();
         tblProducto = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txpResumen = new javax.swing.JTextPane();
         jLabel11 = new javax.swing.JLabel();
-        lblNetoPago = new javax.swing.JLabel();
+        lblNeto = new javax.swing.JLabel();
         btnSalir = new javax.swing.JButton();
         lblFecha = new javax.swing.JLabel();
         lblHora = new javax.swing.JLabel();
+        btnAdquirir = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnOk = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -202,8 +263,6 @@ public class IContado extends javax.swing.JFrame {
 
         jLabel9.setText("CANTIDAD SOLICITADA");
 
-        btnAdquirir.setText("ADQUIRIR");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -225,9 +284,7 @@ public class IContado extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnAdquirir, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())))))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,8 +294,7 @@ public class IContado extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jLabel9)
-                    .addComponent(btnAdquirir, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbxProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -246,12 +302,13 @@ public class IContado extends javax.swing.JFrame {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
+        tblProducto.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         tblProducto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ITEM", "DESCRIPICON DEL PRODUCTO", "CANTIDAD", "PRECIO", "SUBTOTAL"
+                "ITEM", "DESCRIPCION DEL PRODUCTO", "CANTIDAD", "PRECIO", "SUBTOTAL"
             }
         ));
         ScrollPane.setViewportView(tblProducto);
@@ -264,14 +321,42 @@ public class IContado extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel11.setText("NETO A PAGAR");
 
-        lblNetoPago.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblNetoPago.setText("jLabel12");
+        lblNeto.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblNeto.setText("jLabel12");
 
         btnSalir.setText("SALIR");
 
         lblFecha.setText("jLabel12");
 
         lblHora.setText("jLabel13");
+
+        btnAdquirir.setText("ADQUIRIR");
+        btnAdquirir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdquirirActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("ELIMINAR");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("EDITAR");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnOk.setText("OK");
+        btnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOkActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -281,43 +366,51 @@ public class IContado extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(70, 70, 70)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(133, 133, 133)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel11)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(15, 15, 15)
+                                                .addComponent(btnSalir))
+                                            .addComponent(lblNeto))))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(98, 98, 98)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(lblFecha))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblHora)
-                            .addComponent(jLabel6))
-                        .addGap(122, 122, 122))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(lblFecha))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblHora)
+                                    .addComponent(jLabel6))
+                                .addGap(122, 122, 122))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(70, 70, 70)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel10)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addGap(156, 156, 156)
-                                                        .addComponent(jLabel11))
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addGap(171, 171, 171)
-                                                        .addComponent(btnSalir))
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addGap(156, 156, 156)
-                                                        .addComponent(lblNetoPago)))))))
-                                .addContainerGap(64, Short.MAX_VALUE))))))
+                                        .addComponent(btnAdquirir, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(76, Short.MAX_VALUE))))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
@@ -341,28 +434,55 @@ public class IContado extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblFecha)
                             .addComponent(lblHora))))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAdquirir, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblNetoPago)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(33, Short.MAX_VALUE))
+                        .addComponent(lblNeto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAdquirirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdquirirActionPerformed
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_btnAdquirirActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnOkActionPerformed
 
     /**
      * @param args the command line arguments
@@ -402,6 +522,9 @@ public class IContado extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane ScrollPane;
     private javax.swing.JButton btnAdquirir;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnOk;
     private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox<String> cbxProducto;
     private javax.swing.JLabel jLabel1;
@@ -420,7 +543,7 @@ public class IContado extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblHora;
-    private javax.swing.JLabel lblNetoPago;
+    private javax.swing.JLabel lblNeto;
     private javax.swing.JTable tblProducto;
     private javax.swing.JTextPane txpResumen;
     private javax.swing.JTextField txtCantidadSolicitada;

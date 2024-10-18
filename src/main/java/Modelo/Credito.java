@@ -9,7 +9,7 @@ package Modelo;
  * @author USER 17
  */
 public class Credito extends Ventas {
-     private int letras;  // Cantidad de letras para el crédito
+    private int letras;  // Cantidad de letras para el crédito
     private int x;       // Cantidad de productos (variable solicitada)
 
     // Constructor que inicializa la cantidad de productos, cliente, producto, RUC y las letras

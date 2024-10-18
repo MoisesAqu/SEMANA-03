@@ -4,6 +4,7 @@
  */
 package Modelo;
 
+import CONEXION.Conexion;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -15,7 +16,11 @@ public class Ventas {
    int cantidad;
     String cliente, fecha, hora, producto, ruc;
 
+    // Instancia del conector de base de datos
+    Conexion dbConnector = new Conexion();
+
     public Ventas() {
+        dbConnector.conectar();  // Conectar a la base de datos
     }
 
     public Ventas(int cantidad, String cliente, String producto, String ruc) {
@@ -23,11 +28,15 @@ public class Ventas {
         this.cliente = cliente;
         this.producto = producto;
         this.ruc = ruc;
+
         // Se obtiene la fecha y hora automáticamente
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter htf = DateTimeFormatter.ofPattern("HH:mm:ss");
         this.fecha = dtf.format(LocalDateTime.now());
         this.hora = htf.format(LocalDateTime.now());
+
+        dbConnector.conectar();  // Conectar a la base de datos
+        guardarVenta();          // Guardar la venta en la base de datos
     }
 
     public int getCantidad() {
@@ -82,7 +91,7 @@ public class Ventas {
                 return 3500.00;
             case "licuadora":
                 return 500.00;
-            case "extractor":
+            case "extractora":
                 return 150.00;
             case "radiograbadora":
                 return 750.00;
@@ -94,4 +103,15 @@ public class Ventas {
                 throw new Exception("Producto no encontrado");
         }
     }
+
+    // Guardar la venta en la base de datos
+    private void guardarVenta() {
+        try {
+            double subtotal = calculaSubtotal();
+            dbConnector.insertarVenta(cliente, producto, cantidad, fecha, hora, ruc, subtotal);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+ 

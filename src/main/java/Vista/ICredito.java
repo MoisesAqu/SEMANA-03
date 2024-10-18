@@ -4,15 +4,18 @@
  */
 package Vista;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author USER 17
  */
-    public class ICredito extends javax.swing.JFrame {
+public class ICredito extends javax.swing.JFrame {
 
     // Método para mostrar mensajes al usuario (por ejemplo, error o confirmación)
     public void mostrarMensaje(String mensaje) {
@@ -23,36 +26,32 @@ import javax.swing.JOptionPane;
     public javax.swing.JLabel getLblNetoPago() {
         return lblNetoPago;  // Retorna el JLabel que muestra el neto a pagar
     }
-    
-        // Métodos Getters y Setters
-    public String getTxtRazonSocial() {
-        return txtRazonSocial.getText();
+
+    // Métodos Getters y Setters
+    public javax.swing.JTextField getTxtRazonSocial() {
+        return txtRazonSocial;
     }
 
-    public String getTxtRuc() {
-        return txtRuc.getText();
+    public javax.swing.JTextField getTxtRuc() {
+        return txtRuc;
     }
 
-    public String getCbxProducto() {
-        return cbxProducto.getSelectedItem().toString();
+    public javax.swing.JComboBox<String> getCbxProducto() {
+        return cbxProducto;
     }
 
     public int getCantidad() {
         return Integer.parseInt(txtCantidadSolicitada.getText());
     }
 
-    public int getCbxLetras() {
-        return Integer.parseInt(cbxLetras.getSelectedItem().toString());
+    // CORRECCIÓN: Devolver JComboBox en vez de int directamente
+    public javax.swing.JComboBox<String> getCbxLetras() {
+        return cbxLetras; // Devolver el JComboBox, no el valor directo
     }
 
     public javax.swing.JTable getTblProducto() {
         return tblProducto;
     }
-
-    public javax.swing.JTextPane getTxpResumenCredito() {
-        return txpResumenCredito;  // Manteniendo txpResumenCredito
-    }
-
 
     public void setLblNetoPago(double neto) {
         lblNetoPago.setText(String.valueOf(neto));
@@ -70,31 +69,101 @@ import javax.swing.JOptionPane;
         return btnAdquirir;
     }
 
+    public javax.swing.JButton getBtnEliminar() {
+        return btnEliminar;
+    }
+
+    public javax.swing.JButton getBtnEditar() {
+        return btnEditar;
+    }
+
+    public javax.swing.JButton getBtnOk() {
+        return btnOk;
+    }
+
+    public javax.swing.JTextField getTxtCantidadSolicitada() {
+        return txtCantidadSolicitada;
+    }
+
     public javax.swing.JButton getBtnMostrarResumen() {
         return btnMostrarResumen;
     }
 
-    public void setResumen(String texto) {
-        txpResumenCredito.setText(texto);  // txpResumenCredito es el JTextPane donde se muestra el resumen
+    public void setTxtRazonSocial(String razonSocial) {
+        this.txtRazonSocial.setText(razonSocial);
     }
 
-    
+    public void setTxtRuc(String ruc) {
+        this.txtRuc.setText(ruc);
+    }
+
+    public void setCbxProducto(String producto) {
+        this.cbxProducto.setSelectedItem(producto);
+    }
+
+    public void setCantidad(int cantidad) {
+        this.txtCantidadSolicitada.setText(String.valueOf(cantidad));
+    }
+
+    public void setResumen(int letras, double montoTotal) {
+        DefaultTableModel model = (DefaultTableModel) tblResumenCredito.getModel();
+        model.setRowCount(0);  // Limpia las filas anteriores
+
+        // Configurar el formato de moneda según la convención de tu región
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator(',');  // Coma para los decimales
+        simbolos.setGroupingSeparator('.');  // Punto para los miles
+        DecimalFormat df = new DecimalFormat("$ #,##0.00", simbolos);
+
+
+        double montoPorLetra = montoTotal / letras;
+
+        // Agrega cada letra como una fila nueva en la tabla, con el formato adecuado
+        for (int i = 1; i <= letras; i++) {
+            model.addRow(new Object[]{i, df.format(montoPorLetra)});
+        }
+    }
+
+
+
+    public void limpiarTodosLosCampos() {
+        txtRazonSocial.setText("");  // Limpiar el campo del cliente
+        txtRuc.setText("");          // Limpiar el campo del RUC
+        cbxProducto.setSelectedIndex(0);  // Restablecer el producto seleccionado
+        txtCantidadSolicitada.setText(""); // Limpiar la cantidad solicitada
+    }
+
+    public void limpiarCampos() {
+        // Solo limpiar los campos relacionados con la edición del producto
+        cbxProducto.setSelectedIndex(0);  // Restablecer el producto seleccionado
+        txtCantidadSolicitada.setText(""); // Limpiar la cantidad solicitada
+        // Cliente y RUC no se tocan aquí
+    }
+
     public javax.swing.JButton getBtnSalir() {
         return btnSalir;
     }
-    
+
     /**
      * Creates new form ICredito
      */
     public ICredito() {
         initComponents();
         setLocationRelativeTo(null); // Esto centra el JFrame
-         
+
         // Inicializar fecha y hora actual
         DateTimeFormatter dtfFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtfHora = DateTimeFormatter.ofPattern("HH:mm:ss");
         lblFechaActual.setText(dtfFecha.format(LocalDateTime.now()));
         lblHoraActual.setText(dtfHora.format(LocalDateTime.now()));
+
+        // Crear la tabla y agregarla al scroll pane
+        tblResumenCredito = new javax.swing.JTable();
+        tblResumenCredito.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{"N° Letra", "Monto"}
+        ));
+        jScrollPane2.setViewportView(tblResumenCredito);
     }
 
     /**
@@ -131,12 +200,15 @@ import javax.swing.JOptionPane;
         jPanel3 = new javax.swing.JPanel();
         btnSalir = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txpResumenCredito = new javax.swing.JTextPane();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         cbxLetras = new javax.swing.JComboBox<>();
         btnMostrarResumen = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblResumenCredito = new javax.swing.JTable();
+        btnOk = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -147,7 +219,7 @@ import javax.swing.JOptionPane;
         btnAdquirir.setText("ADQUIRIR");
 
         lblNetoPago.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        lblNetoPago.setText("jLabel12");
+        lblNetoPago.setText("Neto Pago");
 
         lblFechaActual.setText("jLabel12");
 
@@ -262,23 +334,43 @@ import javax.swing.JOptionPane;
 
         jLabel10.setText("RESUMEN");
 
-        jScrollPane1.setViewportView(txpResumenCredito);
-
         jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel14.setText("OPCIONES DEL CREDITO");
 
         jLabel15.setText("Seleccione letras");
 
-        cbxLetras.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+        cbxLetras.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7" }));
 
         btnMostrarResumen.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnMostrarResumen.setText("MOSTRAR RESUMEN");
+
+        tblResumenCredito.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Item", "Monto"
+            }
+        ));
+        jScrollPane2.setViewportView(tblResumenCredito);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(0, 360, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addGap(190, 190, 190))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(btnSalir)
+                        .addGap(199, 199, 199))))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jLabel14)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(44, 44, 44)
@@ -288,44 +380,51 @@ import javax.swing.JOptionPane;
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addComponent(btnMostrarResumen)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel14)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addGap(190, 190, 190))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnSalir)
-                        .addGap(199, 199, 199))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(63, 63, 63))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addGap(9, 9, 9)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cbxLetras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
                         .addComponent(btnMostrarResumen))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        btnOk.setText("OK");
+        btnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOkActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("ELIMINAR");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("EDITAR");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -352,8 +451,15 @@ import javax.swing.JOptionPane;
                                     .addComponent(jLabel6))
                                 .addGap(122, 122, 122))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(139, 139, 139)
-                                .addComponent(btnAdquirir, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(59, 59, 59)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(btnAdquirir, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(24, 24, 24)
+                                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
@@ -367,7 +473,7 @@ import javax.swing.JOptionPane;
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(15, 15, 15)
                                         .addComponent(lblNetoPago)))))
-                        .addContainerGap(32, Short.MAX_VALUE))))
+                        .addContainerGap(51, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(250, 250, 250)
                 .addComponent(jLabel1)
@@ -395,11 +501,15 @@ import javax.swing.JOptionPane;
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(btnAdquirir, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(32, 32, 32)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnAdquirir, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -414,6 +524,18 @@ import javax.swing.JOptionPane;
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnOkActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -453,7 +575,10 @@ import javax.swing.JOptionPane;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane ScrollPane;
     private javax.swing.JButton btnAdquirir;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnMostrarResumen;
+    private javax.swing.JButton btnOk;
     private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox<String> cbxLetras;
     private javax.swing.JComboBox<String> cbxProducto;
@@ -473,12 +598,12 @@ import javax.swing.JOptionPane;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblFechaActual;
     private javax.swing.JLabel lblHoraActual;
     private javax.swing.JLabel lblNetoPago;
     private javax.swing.JTable tblProducto;
-    private javax.swing.JTextPane txpResumenCredito;
+    private javax.swing.JTable tblResumenCredito;
     private javax.swing.JTextField txtCantidadSolicitada;
     private javax.swing.JTextField txtRazonSocial;
     private javax.swing.JTextField txtRuc;

@@ -23,7 +23,6 @@ public class Contado extends Ventas{
         return n;
     }
 
-    // Método para calcular el descuento basado en el monto subtotal
     public double calculaDescuento(double subtotal) {
         if (subtotal < 1000) {
             return subtotal * 0.05;  // 5% de descuento
@@ -33,6 +32,7 @@ public class Contado extends Ventas{
             return subtotal * 0.12;  // 12% de descuento
         }
     }
+
 
     // Método para calcular el total con descuento
     public double calculaTotal() throws Exception {
