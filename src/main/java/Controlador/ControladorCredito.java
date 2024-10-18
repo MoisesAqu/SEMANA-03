@@ -4,7 +4,7 @@
  */
 package Controlador;
 
-import CONEXION.Conexion;
+
 import Modelo.Credito;
 import Vista.ICredito;
 import Vista.IVentaProductos;

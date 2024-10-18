@@ -4,7 +4,7 @@
  */
 package Controlador;
 
-import CONEXION.Conexion;
+
 import Modelo.Contado;
 import Vista.IContado;
 import Vista.IVentaProductos;

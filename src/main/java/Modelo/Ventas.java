@@ -4,7 +4,7 @@
  */
 package Modelo;
 
-import CONEXION.Conexion;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -16,11 +16,10 @@ public class Ventas {
    int cantidad;
     String cliente, fecha, hora, producto, ruc;
 
-    // Instancia del conector de base de datos
-    Conexion dbConnector = new Conexion();
+    
 
     public Ventas() {
-        dbConnector.conectar();  // Conectar a la base de datos
+        
     }
 
     public Ventas(int cantidad, String cliente, String producto, String ruc) {
@@ -35,7 +34,6 @@ public class Ventas {
         this.fecha = dtf.format(LocalDateTime.now());
         this.hora = htf.format(LocalDateTime.now());
 
-        dbConnector.conectar();  // Conectar a la base de datos
         guardarVenta();          // Guardar la venta en la base de datos
     }
 
@@ -108,7 +106,7 @@ public class Ventas {
     private void guardarVenta() {
         try {
             double subtotal = calculaSubtotal();
-            dbConnector.insertarVenta(cliente, producto, cantidad, fecha, hora, ruc, subtotal);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
